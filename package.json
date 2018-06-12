@@ -4,11 +4,14 @@
   "description": "Sistema de pagamento",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
   },
   "author": "Aleksander Velozo Pascoal",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.3"
+    "consign": "^0.1.6",
+    "express": "^4.16.3",
+    "express-load": "^1.1.16"
   }
 }
