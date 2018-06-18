@@ -1,5 +1,5 @@
 
-var app = require('./app/config/express')();
+var app = require('./config/express')();
 
 app.listen(3000, () => { console.log('payfast up and running');})
 
