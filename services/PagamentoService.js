@@ -8,6 +8,8 @@ class PagamentoService {
 
     salvarPagamento(pagamento, callback){
         console.log('gravando pagamento...');
+        pagamento.status = 'realizado';
+        pagamento.data = new Date();
         this._conexao.query('insert into pagamentos set ?', pagamento, callback);
     }
 

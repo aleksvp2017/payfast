@@ -10,16 +10,14 @@ module.exports= (app) => {
 
     app.post("/pagamentos", (request, response) => {
         let pagamento = request.body;
-        pagamento.status = 'realizado';
-        pagamento.data = new Date();
-        console.log(pagamento);
         let pagamentoServico = app.services.PagamentoService(app);
         pagamentoServico.salvarPagamento(pagamento, (erro, resultado) => {
             if (!erro){
                 response.json(pagamento);
             }
             else{
-                response.send("Erro ao salvar:" + erro);
+                console.log(`Erro ao salvar pagamento ${erro}`);
+                response.status(400).send(erro);
             }
         });
     });
