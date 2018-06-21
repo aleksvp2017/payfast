@@ -1,9 +1,10 @@
 function prepararValidacoes(request){
-    request.assert("valor", "Valor deve ser preenchido").notEmpty();
+    request.assert("pagamento.valor", "Valor deve ser preenchido").notEmpty();
 }
 
 
 module.exports= (app) => {
+    //LISTA
     app.get("/pagamentos", (request, response) => {
         let pagamentoServico = app.services.PagamentoService(app);
         pagamentoServico.listarTodosPagamentos((erro, resultado) => {
@@ -16,9 +17,28 @@ module.exports= (app) => {
         })    
     });
 
+    function criarRespostaComLinks(pagamento){
+        return resposta = {
+            dadosDoPagamento: pagamento,
+            links: [
+                {
+                    href: "http://localhost:3000/pagamentos/" + pagamento.id,
+                    method: "PUT",
+                    rel: "Confirmar"
+                },
+                {
+                    href: "http://localhost:3000/pagamentos/" + pagamento.id,
+                    method: "DELETE",
+                    rel: "Cancelar"
+                }
+            ]
+        };
+    }
 
+    //CADASTRAR
     app.post("/pagamentos", (request, response) => {
-        let pagamento = request.body;
+        let pagamento = request.body["pagamento"];
+        console.log(pagamento);
         
         prepararValidacoes(request);
         let erros = request.validationErrors();
@@ -30,7 +50,8 @@ module.exports= (app) => {
         let pagamentoServico = app.services.PagamentoService(app);
         pagamentoServico.salvarPagamento(pagamento, (erro, resultado) => {
             if (!erro){
-                response.location("/pagamentos/" + resultado.insertId).status(201).json(pagamento);
+                pagamento.id = resultado.insertId;
+                response.location("/pagamentos/" + pagamento.id).status(201).json(criarRespostaComLinks(pagamento));
             }
             else{
                 console.log(`Erro ao salvar pagamento ${erro}`);
@@ -39,6 +60,7 @@ module.exports= (app) => {
         });
     });
 
+    //CONFIRMA
     app.put("/pagamentos/:id", (request, response) => {
         let pagamento = {};
         pagamento.id = request.params.id;
@@ -55,6 +77,7 @@ module.exports= (app) => {
         });
     });
 
+    //CANCELA
     app.delete("/pagamentos/:id", (request, response) => {
         let pagamento = {};
         pagamento.id = request.params.id;
